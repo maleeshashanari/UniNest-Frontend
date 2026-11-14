@@ -1,98 +1,54 @@
+import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import toast from "react-hot-toast";
+import { KeyRound, LogOut } from "lucide-react";
 
-import { Link } from "react-router-dom";
+export default function Home() {
+  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user") || "null");
 
-function Home() {
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    toast.success("Logged out");
+    navigate("/login", { replace: true });
+  };
 
-    return (
-        <div className="min-h-screen bg-primary">
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full max-w-md rounded-3xl border border-border bg-white p-8 text-center shadow-xl"
+      >
+        {user?.image && (
+          <img
+            src={user.image}
+            alt="Profile"
+            referrerPolicy="no-referrer"
+            className="mx-auto mb-4 h-20 w-20 rounded-full border-4 border-primary-100 object-cover"
+          />
+        )}
+        <h1 className="text-2xl font-extrabold text-ink">
+          Welcome{user ? `, ${user.firstName}` : ""}!
+        </h1>
+        <p className="mt-1 text-sm text-muted">{user?.email}</p>
 
-            {/* Hero Section */}
-            <section className="max-w-7xl mx-auto px-6 py-24">
-
-                <div className="max-w-2xl">
-
-                    <h1 className="text-5xl font-bold text-secondary leading-tight">
-                        Find Your Perfect
-                        <span className="text-accent"> Student Accommodation</span>
-                    </h1>
-
-                    <p className="text-gray-600 text-lg mt-6 leading-relaxed">
-                        Discover comfortable and affordable places to stay.
-                        UniNest makes finding your next student accommodation
-                        easier and more convenient.
-                    </p>
-
-                    <div className="flex gap-4 mt-8">
-
-                        <Link
-                            to="/register"
-                            className="bg-accent text-white px-7 py-3 rounded-lg font-semibold hover:bg-sky-600"
-                        >
-                            Get Started
-                        </Link>
-
-                        <Link
-                            to="/login"
-                            className="border-2 border-secondary text-secondary px-7 py-3 rounded-lg font-semibold hover:bg-secondary hover:text-white"
-                        >
-                            Login
-                        </Link>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-            {/* Features Section */}
-            <section className="bg-white py-16">
-
-                <div className="max-w-7xl mx-auto px-6">
-
-                    <h2 className="text-3xl font-bold text-secondary text-center">
-                        Why Choose UniNest?
-                    </h2>
-
-                    <div className="grid md:grid-cols-3 gap-8 mt-12">
-
-                        <div className="p-7 bg-primary rounded-xl">
-                            <h3 className="text-xl font-bold text-secondary">
-                                Find Accommodation
-                            </h3>
-                            <p className="text-gray-600 mt-3">
-                                Discover suitable accommodation options
-                                for your student life.
-                            </p>
-                        </div>
-
-                        <div className="p-7 bg-primary rounded-xl">
-                            <h3 className="text-xl font-bold text-secondary">
-                                Affordable Places
-                            </h3>
-                            <p className="text-gray-600 mt-3">
-                                Explore accommodation options that
-                                match your budget.
-                            </p>
-                        </div>
-
-                        <div className="p-7 bg-primary rounded-xl">
-                            <h3 className="text-xl font-bold text-secondary">
-                                Easy Management
-                            </h3>
-                            <p className="text-gray-600 mt-3">
-                                Manage your student account easily
-                                through your dashboard.
-                            </p>
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </section>
-
+        <div className="mt-6 flex flex-col gap-3">
+          <Link
+            to="/change-password"
+            className="flex items-center justify-center gap-2 rounded-xl bg-primary-50 px-4 py-3 text-sm font-bold text-primary-700 transition-colors hover:bg-primary-100"
+          >
+            <KeyRound size={18} /> Change password
+          </Link>
+          <button
+            onClick={logout}
+            className="flex items-center justify-center gap-2 rounded-xl bg-accent-50 px-4 py-3 text-sm font-bold text-accent-600 transition-colors hover:bg-accent-100"
+          >
+            <LogOut size={18} /> Log out
+          </button>
         </div>
-    );
+      </motion.div>
+    </div>
+  );
 }
-
-export default Home;

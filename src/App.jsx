@@ -1,98 +1,53 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
-import { AuthProvider } from "./context/AuthContext";
-import ProtectedRoute from "./routes/ProtectedRoute";
-import GuestRoute from "./routes/GuestRoute";
-
-import Login from "./pages/auth/Login";
-import Register from "./pages/auth/Register";
-import ForgotPassword from "./pages/auth/ForgotPassword";
-import ResetPassword from "./pages/auth/ResetPassword";
-
-import StudentLayout from "./components/StudentLayout";
-import StudentHome from "./pages/student/StudentHome";
-import Accommodations from "./pages/student/Accommodations";
-import AccommodationDetails from "./pages/student/AccommodationDetails";
-import StudentBookings from "./pages/student/StudentBookings";
-import StudentProfile from "./pages/student/StudentProfile";
-
-import AdminDashboard from "./pages/AdminDashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
+import ChangePassword from "./pages/ChangePassword";
+import Home from "./pages/Home";
 
 function App() {
-    return (
-        <AuthProvider>
-            <BrowserRouter>
-                <Routes>
+  return (
+    <BrowserRouter>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: { borderRadius: "12px", fontWeight: 600 },
+        }}
+      />
 
-                    {/* Guest Routes */}
-                    <Route element={<GuestRoute />}>
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
-                    </Route>
+      <Routes>
+        {/* Public routes */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
-                    {/* Password Recovery */}
-                    <Route
-                        path="/forgot-password"
-                        element={<ForgotPassword />}
-                    />
+        {/* Protected routes (need a valid token in localStorage) */}
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/change-password"
+          element={
+            <ProtectedRoute>
+              <ChangePassword />
+            </ProtectedRoute>
+          }
+        />
 
-                    <Route
-                        path="/reset-password"
-                        element={<ResetPassword />}
-                    />
-
-                    {/* Student Routes */}
-                    <Route element={<ProtectedRoute allowedRole="student" />}>
-                        <Route path="/student" element={<StudentLayout />}>
-
-                            <Route index element={<StudentHome />} />
-
-                            <Route
-                                path="accommodations"
-                                element={<Accommodations />}
-                            />
-
-                            <Route
-                                path="accommodations/:id"
-                                element={<AccommodationDetails />}
-                            />
-
-                            <Route
-                                path="bookings"
-                                element={<StudentBookings />}
-                            />
-
-                            <Route
-                                path="profile"
-                                element={<StudentProfile />}
-                            />
-
-                        </Route>
-                    </Route>
-
-                    {/* Admin Routes */}
-                    <Route element={<ProtectedRoute allowedRole="admin" />}>
-                        <Route
-                            path="/admin"
-                            element={<AdminDashboard />}
-                        />
-                    </Route>
-
-                    {/* Default Route */}
-                    <Route
-                        path="/"
-                        element={<Navigate to="/login" replace />}
-                    />
-
-                    <Route
-                        path="*"
-                        element={<Navigate to="/login" replace />}
-                    />
-
-                </Routes>
-            </BrowserRouter>
-        </AuthProvider>
-    );
+        {/* Unknown URL */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
