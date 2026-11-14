@@ -15,6 +15,7 @@ import toast from "react-hot-toast";
 
 import api from "../../api/axios";
 import ReviewSection from "../../components/ReviewSection";
+import BookingForm from "../../components/BookingForm";
 
 export default function AccommodationDetails() {
     const { id } = useParams();
@@ -347,6 +348,8 @@ export default function AccommodationDetails() {
                 </div>
 
             </section>
+            
+            <BookingForm accommodation={accommodation} />
 
             <ReviewSection accommodationId={accommodation._id} />
 

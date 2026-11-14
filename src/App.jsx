@@ -13,19 +13,10 @@ import StudentLayout from "./components/StudentLayout";
 import StudentHome from "./pages/student/StudentHome";
 import Accommodations from "./pages/student/Accommodations";
 import AccommodationDetails from "./pages/student/AccommodationDetails";
+import StudentBookings from "./pages/student/StudentBookings";
+import StudentProfile from "./pages/student/StudentProfile";
 
 import AdminDashboard from "./pages/AdminDashboard";
-
-function ComingSoon({ title }) {
-    return (
-        <div className="rounded-2xl border border-border bg-white p-10 text-center">
-            <h1 className="text-2xl font-bold text-ink">{title}</h1>
-            <p className="mt-2 text-sm text-muted">
-                This section will be available in the next development part.
-            </p>
-        </div>
-    );
-}
 
 function App() {
     return (
@@ -52,7 +43,6 @@ function App() {
 
                     {/* Student Routes */}
                     <Route element={<ProtectedRoute allowedRole="student" />}>
-
                         <Route path="/student" element={<StudentLayout />}>
 
                             <Route index element={<StudentHome />} />
@@ -67,19 +57,17 @@ function App() {
                                 element={<AccommodationDetails />}
                             />
 
-                            {/* Part 3 */}
                             <Route
                                 path="bookings"
-                                element={<ComingSoon title="My Bookings" />}
+                                element={<StudentBookings />}
                             />
 
                             <Route
                                 path="profile"
-                                element={<ComingSoon title="My Profile" />}
+                                element={<StudentProfile />}
                             />
 
                         </Route>
-
                     </Route>
 
                     {/* Admin Routes */}
