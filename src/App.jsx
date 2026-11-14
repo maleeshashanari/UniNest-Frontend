@@ -1,61 +1,71 @@
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-import Navbar from "./components/Navbar";
-import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import GuestRoute from "./routes/GuestRoute";
 
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import ResetPassword from "./pages/auth/ResetPassword";
 
-import StudentDashboard from "./pages/student/StudentDashboard";
-import AdminDashboard from "./pages/admin/AdminDashboard";
+import StudentDashboard from "./pages/StudentDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 
 function App() {
-
     return (
-        <BrowserRouter>
+        <AuthProvider>
+            <BrowserRouter>
+                <Routes>
 
-            <Navbar />
+                    {/* Guest Routes */}
+                    <Route element={<GuestRoute />}>
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
+                    </Route>
 
-            <Routes>
-
-                {/* Public Routes */}
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-
-                {/* Student Routes */}
-                <Route element={<ProtectedRoute allowedRole="student" />}>
+                    {/* Password Recovery */}
                     <Route
-                        path="/student/dashboard"
-                        element={<StudentDashboard />}
+                        path="/forgot-password"
+                        element={<ForgotPassword />}
                     />
-                </Route>
 
-                {/* Admin Routes */}
-                <Route element={<ProtectedRoute allowedRole="admin" />}>
                     <Route
-                        path="/admin/dashboard"
-                        element={<AdminDashboard />}
+                        path="/reset-password"
+                        element={<ResetPassword />}
                     />
-                </Route>
 
-                {/* Unknown Routes */}
-                <Route
-                    path="*"
-                    element={
-                        <div className="min-h-screen flex items-center justify-center bg-primary">
-                            <h1 className="text-3xl font-bold text-secondary">
-                                404 - Page Not Found
-                            </h1>
-                        </div>
-                    }
-                />
+                    {/* Student Routes */}
+                    <Route element={<ProtectedRoute allowedRole="student" />}>
+                        <Route
+                            path="/student"
+                            element={<StudentDashboard />}
+                        />
+                    </Route>
 
-            </Routes>
+                    {/* Admin Routes */}
+                    <Route element={<ProtectedRoute allowedRole="admin" />}>
+                        <Route
+                            path="/admin"
+                            element={<AdminDashboard />}
+                        />
+                    </Route>
 
-        </BrowserRouter>
+                    {/* Default Route */}
+                    <Route
+                        path="/"
+                        element={<Navigate to="/login" replace />}
+                    />
+
+                    <Route
+                        path="*"
+                        element={<Navigate to="/login" replace />}
+                    />
+
+                </Routes>
+            </BrowserRouter>
+        </AuthProvider>
     );
 }
 
