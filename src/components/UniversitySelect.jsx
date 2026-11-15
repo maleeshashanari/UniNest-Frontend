@@ -127,7 +127,7 @@ export default function UniversitySelect({
                     onClick={() => choose(OTHERS)}
                     className="flex w-full items-center justify-between px-3.5 py-2.5 text-left text-sm font-semibold text-accent-600 transition-colors hover:bg-accent-50"
                   >
-                    <span>Others (my university is not listed)</span>
+                    <span>Others (Add the university manually)</span>
                     {value === OTHERS && <Check size={16} />}
                   </button>
                 </li>

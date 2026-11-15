@@ -1,11 +1,17 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, KeyRound, UserRound } from "lucide-react";
+import { ArrowRight, Building2, KeyRound, UserRound } from "lucide-react";
 
 import Avatar from "../components/Avatar";
 import { getUser } from "../utils/auth";
 
 const cards = [
+  {
+    to: "/accommodations",
+    title: "Find a stay",
+    text: "Browse hostels, boardings and annexes near your campus.",
+    Icon: Building2,
+  },
   {
     to: "/profile",
     title: "Edit profile",

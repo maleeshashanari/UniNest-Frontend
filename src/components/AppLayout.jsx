@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { Home, KeyRound, LogOut, UserRound } from "lucide-react";
+import { Building2, Home, KeyRound, LogOut, ShieldCheck, UserRound } from "lucide-react";
 
 import Avatar from "./Avatar";
 import { clearSession, getUser } from "../utils/auth";
 
 const links = [
   { to: "/home", label: "Home", Icon: Home },
+  { to: "/accommodations", label: "Stays", Icon: Building2 },
   { to: "/profile", label: "Profile", Icon: UserRound },
   { to: "/change-password", label: "Password", Icon: KeyRound },
 ];
@@ -31,12 +32,12 @@ export default function AppLayout() {
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-40 border-b border-border bg-white">
-        <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-4">
           <div className="flex items-center gap-2 text-xl font-extrabold text-ink">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-600 text-white">
               <Home size={20} />
             </span>
-            UniNest
+            <span className="hidden sm:inline">UniNest</span>
           </div>
 
           <nav className="flex items-center gap-1">
@@ -53,13 +54,26 @@ export default function AppLayout() {
                 }
               >
                 <Icon size={18} />
-                <span className="hidden sm:inline">{label}</span>
+                <span className="hidden md:inline">{label}</span>
               </NavLink>
             ))}
           </nav>
 
-          <div className="flex items-center gap-3">
-            <Avatar src={user?.image} name={`${user?.firstName || ""} ${user?.lastName || ""}`} size={36} />
+          <div className="flex items-center gap-2">
+            {user?.role === "admin" && (
+              <Link
+                to="/admin"
+                className="flex items-center gap-1.5 rounded-lg bg-accent-50 px-3 py-2 text-sm font-bold text-accent-600 transition-colors hover:bg-accent-100"
+              >
+                <ShieldCheck size={16} />
+                <span className="hidden sm:inline">Admin panel</span>
+              </Link>
+            )}
+            <Avatar
+              src={user?.image}
+              name={`${user?.firstName || ""} ${user?.lastName || ""}`}
+              size={36}
+            />
             <button
               onClick={logout}
               title="Log out"
@@ -71,7 +85,7 @@ export default function AppLayout() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-5xl px-4 py-8">
+      <main className="mx-auto max-w-6xl px-4 py-8">
         <Outlet />
       </main>
     </div>

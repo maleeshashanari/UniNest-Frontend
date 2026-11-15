@@ -27,6 +27,7 @@ import PasswordStrength from "../components/PasswordStrength";
 import { passwordRules } from "../data/passwordRules";
 import UniversitySelect from "../components/UniversitySelect";
 import { OTHERS } from "../data/universities";
+import { homeFor } from "../utils/auth";
 
 const container = {
   hidden: {},
@@ -149,7 +150,7 @@ export default function Register() {
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("user", JSON.stringify(res.data.user));
         toast.success(`Welcome, ${res.data.user.firstName}!`);
-        navigate("/home");
+        navigate(homeFor(res.data.user));
       } catch (err) {
         toast.error(err.response?.data?.message || "Google login failed");
       } finally {

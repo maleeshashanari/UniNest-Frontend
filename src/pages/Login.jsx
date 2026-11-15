@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useGoogleLogin } from "@react-oauth/google";
 import toast from "react-hot-toast";
 import { ArrowRight, Eye, EyeOff, Loader2, Lock, Mail, Sparkles } from "lucide-react";
+import { getUser, homeFor, saveSession } from "../utils/auth";
 
 import api from "../api/axios";
 import AuthLayout from "../components/AuthLayout";
@@ -22,18 +23,13 @@ const item = {
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
-  const redirectTo = location.state?.from?.pathname || "/home";
+  const from = location.state?.from?.pathname;
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-
-  const saveSession = (data) => {
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
-  };
 
   // All hooks must be called BEFORE any early return
   const googleLogin = useGoogleLogin({
@@ -45,7 +41,7 @@ export default function Login() {
         });
         saveSession(res.data);
         toast.success(`Welcome, ${res.data.user.firstName}!`);
-        navigate(redirectTo, { replace: true });
+        navigate(homeFor(res.data.user, from), { replace: true });
       } catch (err) {
         toast.error(err.response?.data?.message || "Google login failed");
       } finally {
@@ -57,7 +53,7 @@ export default function Login() {
 
   // Already logged in? Skip the login page (safe now, after all hooks)
   if (localStorage.getItem("token")) {
-    return <Navigate to="/home" replace />;
+     return <Navigate to={homeFor(getUser(), from)} replace />;
   }
 
   const handleChange = (e) => {
@@ -88,7 +84,7 @@ export default function Login() {
       });
       saveSession(res.data);
       toast.success(`Welcome back, ${res.data.user.firstName}!`);
-      navigate(redirectTo, { replace: true });
+      navigate(homeFor(res.data.user, from), { replace: true });
     } catch (err) {
       toast.error(err.response?.data?.message || "Login failed");
     } finally {

@@ -1,11 +1,18 @@
 import { Navigate, useLocation } from "react-router-dom";
+import { getToken, getUser, homeFor } from "../utils/auth";
 
-export default function ProtectedRoute({ children }) {
-  const token = localStorage.getItem("token");
+// <ProtectedRoute> = any logged-in user
+// <ProtectedRoute role="admin"> = admins only (students are sent to /home)
+export default function ProtectedRoute({ children, role }) {
   const location = useLocation();
 
-  if (!token) {
+  if (!getToken()) {
     return <Navigate to="/login" replace state={{ from: location }} />;
+  }
+
+  const user = getUser();
+  if (role && user?.role !== role) {
+    return <Navigate to={homeFor(user)} replace />;
   }
 
   return children;
