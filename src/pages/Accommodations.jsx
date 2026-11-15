@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Building2, RefreshCw, Search } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 
 import { getPublicAccommodations } from "../api/accommodations";
 import AccommodationCard from "../components/AccommodationCard";
@@ -15,7 +16,12 @@ export default function Accommodations() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [reloadKey, setReloadKey] = useState(0);
-  const [filters, setFilters] = useState(DEFAULT_FILTERS);
+  const [params] = useSearchParams();
+  const [filters, setFilters] = useState(() => ({
+    ...DEFAULT_FILTERS,
+    search: params.get("q") || "",
+    type: TYPES.includes(params.get("type")) ? params.get("type") : "",
+  }));
 
   useEffect(() => {
     let cancelled = false;
