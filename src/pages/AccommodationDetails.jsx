@@ -18,6 +18,7 @@ import { getAccommodation } from "../api/accommodations";
 import { formatLKR, isRealImage } from "../utils/format";
 import { isAdmin } from "../utils/auth";
 import BookingPanel from "../components/BookingPanel";
+import FeedbackSection from "../components/FeedbackSection";
 
 export default function AccommodationDetails() {
   const { id } = useParams();
@@ -172,6 +173,7 @@ export default function AccommodationDetails() {
               </>
             )}
           </div>
+          {!admin && <FeedbackSection key={item._id} accommodationId={item._id} />}
         </div>
 
         {/* Price card */}

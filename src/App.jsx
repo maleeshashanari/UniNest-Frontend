@@ -18,11 +18,13 @@ const ChangePassword = lazy(() => import("./pages/ChangePassword"));
 const Accommodations = lazy(() => import("./pages/Accommodations"));
 const AccommodationDetails = lazy(() => import("./pages/AccommodationDetails"));
 const MyBookings = lazy(() => import("./pages/MyBookings"));
+const MyFeedback = lazy(() => import("./pages/MyFeedback"));
 
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const AdminAccommodations = lazy(() => import("./pages/admin/AdminAccommodations"));
 const AccommodationForm = lazy(() => import("./pages/admin/AccommodationForm"));
 const AdminBookings = lazy(() => import("./pages/admin/AdminBookings"));
+const AdminFeedback = lazy(() => import("./pages/admin/AdminFeedback"));
 
 function PageLoader() {
   return (
@@ -63,12 +65,20 @@ function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/change-password" element={<ChangePassword />} />
 
-              {/* Students only: the backend rejects admins on /bookings/my */}
+              {/* Students only: the backend rejects admins on these routes */}
               <Route
                 path="/my-bookings"
                 element={
                   <ProtectedRoute role="student">
                     <MyBookings />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/my-reviews"
+                element={
+                  <ProtectedRoute role="student">
+                    <MyFeedback />
                   </ProtectedRoute>
                 }
               />
@@ -88,6 +98,7 @@ function App() {
               <Route path="accommodations/new" element={<AccommodationForm />} />
               <Route path="accommodations/:id/edit" element={<AccommodationForm />} />
               <Route path="bookings" element={<AdminBookings />} />
+              <Route path="feedback" element={<AdminFeedback />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/" replace />} />

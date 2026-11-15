@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { Building2, CalendarCheck, Home, KeyRound, LogOut, ShieldCheck, UserRound } from "lucide-react";
+import { Building2, CalendarCheck, Home, KeyRound, LogOut, ShieldCheck, Star, UserRound } from "lucide-react";
 
 import Avatar from "./Avatar";
 import { clearSession, getUser } from "../utils/auth";
@@ -12,6 +12,7 @@ const links = [
   { to: "/profile", label: "Profile", Icon: UserRound },
   { to: "/change-password", label: "Password", Icon: KeyRound },
   { to: "/my-bookings", label: "Bookings", Icon: CalendarCheck, studentOnly: true },
+  { to: "/my-reviews", label: "Reviews", Icon: Star, studentOnly: true },
 ];
 
 export default function AppLayout() {

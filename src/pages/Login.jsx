@@ -1,15 +1,24 @@
 import { useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useGoogleLogin } from "@react-oauth/google";
 import toast from "react-hot-toast";
-import { ArrowRight, Eye, EyeOff, Loader2, Lock, Mail, Sparkles } from "lucide-react";
-import { getUser, homeFor, saveSession } from "../utils/auth";
+import {
+  ArrowRight,
+  Eye,
+  EyeOff,
+  Loader2,
+  Lock,
+  Mail,
+  ShieldAlert,
+  Sparkles,
+} from "lucide-react";
 
 import api from "../api/axios";
 import AuthLayout from "../components/AuthLayout";
 import FormInput from "../components/FormInput";
 import GoogleButton from "../components/GoogleButton";
+import { getUser, homeFor, saveSession } from "../utils/auth";
 
 const container = {
   hidden: {},
@@ -27,15 +36,36 @@ export default function Login() {
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
+  const [blockedMsg, setBlockedMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+
+  // Shows the blocked banner for 403, a toast for everything else
+  const handleLoginError = (err, fallback) => {
+    const status = err.response?.status;
+    const message = err.response?.data?.message;
+
+    if (status === 403) {
+      setBlockedMsg(
+        message ||
+          "Your account has been blocked. Please contact the UniNest administrator for assistance."
+      );
+      return;
+    }
+    if (!err.response) {
+      toast.error("Cannot reach the server. Please try again.");
+      return;
+    }
+    toast.error(message || fallback);
+  };
 
   // All hooks must be called BEFORE any early return
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
         setGoogleLoading(true);
+        setBlockedMsg("");
         const res = await api.post("/users/google-login", {
           token: tokenResponse.access_token,
         });
@@ -43,7 +73,7 @@ export default function Login() {
         toast.success(`Welcome, ${res.data.user.firstName}!`);
         navigate(homeFor(res.data.user, from), { replace: true });
       } catch (err) {
-        toast.error(err.response?.data?.message || "Google login failed");
+        handleLoginError(err, "Google login failed");
       } finally {
         setGoogleLoading(false);
       }
@@ -51,15 +81,16 @@ export default function Login() {
     onError: () => toast.error("Google sign-in was cancelled or failed"),
   });
 
-  // Already logged in? Skip the login page (safe now, after all hooks)
+  // Already logged in? Skip the login page (safe, after all hooks)
   if (localStorage.getItem("token")) {
-     return <Navigate to={homeFor(getUser(), from)} replace />;
+    return <Navigate to={homeFor(getUser())} replace />;
   }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
+    if (blockedMsg) setBlockedMsg("");
   };
 
   const validate = () => {
@@ -78,6 +109,7 @@ export default function Login() {
 
     try {
       setLoading(true);
+      setBlockedMsg("");
       const res = await api.post("/users/login", {
         email: form.email.trim().toLowerCase(),
         password: form.password,
@@ -86,7 +118,7 @@ export default function Login() {
       toast.success(`Welcome back, ${res.data.user.firstName}!`);
       navigate(homeFor(res.data.user, from), { replace: true });
     } catch (err) {
-      toast.error(err.response?.data?.message || "Login failed");
+      handleLoginError(err, "Login failed");
     } finally {
       setLoading(false);
     }
@@ -113,6 +145,27 @@ export default function Login() {
           <h1 className="text-3xl font-extrabold text-ink">Log in</h1>
           <p className="mt-1 text-sm text-muted">Enter your details to continue.</p>
         </motion.div>
+
+        {/* Blocked account banner */}
+        <AnimatePresence>
+          {blockedMsg && (
+            <motion.div
+              role="alert"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="overflow-hidden"
+            >
+              <div className="flex items-start gap-3 rounded-xl border border-danger/30 bg-danger/5 p-4">
+                <ShieldAlert size={22} className="mt-0.5 shrink-0 text-danger" />
+                <div>
+                  <p className="text-sm font-extrabold text-danger">Account blocked</p>
+                  <p className="mt-0.5 text-sm text-slate-600">{blockedMsg}</p>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <motion.div variants={item}>
           <GoogleButton

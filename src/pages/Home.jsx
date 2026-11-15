@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Building2, CalendarCheck, KeyRound, UserRound } from "lucide-react";
+import { ArrowRight, Building2, CalendarCheck, KeyRound, Star, UserRound } from "lucide-react";
 
 import Avatar from "../components/Avatar";
 import { getUser } from "../utils/auth";
@@ -17,6 +17,12 @@ const cards = [
     title: "My bookings",
     text: "Track your booking requests and stays.",
     Icon: CalendarCheck,
+  },
+  {
+    to: "/my-reviews",
+    title: "My reviews",
+    text: "See and edit the reviews you have written.",
+    Icon: Star,
   },
   {
     to: "/profile",
