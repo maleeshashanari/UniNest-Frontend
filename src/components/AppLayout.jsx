@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { Building2, Home, KeyRound, LogOut, ShieldCheck, UserRound } from "lucide-react";
+import { Building2, CalendarCheck, Home, KeyRound, LogOut, ShieldCheck, UserRound } from "lucide-react";
 
 import Avatar from "./Avatar";
 import { clearSession, getUser } from "../utils/auth";
@@ -11,6 +11,7 @@ const links = [
   { to: "/accommodations", label: "Stays", Icon: Building2 },
   { to: "/profile", label: "Profile", Icon: UserRound },
   { to: "/change-password", label: "Password", Icon: KeyRound },
+  { to: "/my-bookings", label: "Bookings", Icon: CalendarCheck, studentOnly: true },
 ];
 
 export default function AppLayout() {
@@ -41,7 +42,9 @@ export default function AppLayout() {
           </div>
 
           <nav className="flex items-center gap-1">
-            {links.map(({ to, label, Icon }) => (
+            {links
+              .filter((l) => !l.studentOnly || user?.role === "student")
+              .map(({ to, label, Icon }) => (
               <NavLink
                 key={to}
                 to={to}

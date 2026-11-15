@@ -17,10 +17,12 @@ const Profile = lazy(() => import("./pages/Profile"));
 const ChangePassword = lazy(() => import("./pages/ChangePassword"));
 const Accommodations = lazy(() => import("./pages/Accommodations"));
 const AccommodationDetails = lazy(() => import("./pages/AccommodationDetails"));
+const MyBookings = lazy(() => import("./pages/MyBookings"));
 
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const AdminAccommodations = lazy(() => import("./pages/admin/AdminAccommodations"));
 const AccommodationForm = lazy(() => import("./pages/admin/AccommodationForm"));
+const AdminBookings = lazy(() => import("./pages/admin/AdminBookings"));
 
 function PageLoader() {
   return (
@@ -47,7 +49,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
 
-            {/* Student pages (admins can open these too) */}
+            {/* Student pages (admins can open most of these too) */}
             <Route
               element={
                 <ProtectedRoute>
@@ -60,6 +62,16 @@ function App() {
               <Route path="/accommodations/:id" element={<AccommodationDetails />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/change-password" element={<ChangePassword />} />
+
+              {/* Students only: the backend rejects admins on /bookings/my */}
+              <Route
+                path="/my-bookings"
+                element={
+                  <ProtectedRoute role="student">
+                    <MyBookings />
+                  </ProtectedRoute>
+                }
+              />
             </Route>
 
             {/* Admin pages (students are redirected to /home) */}
@@ -75,6 +87,7 @@ function App() {
               <Route path="accommodations" element={<AdminAccommodations />} />
               <Route path="accommodations/new" element={<AccommodationForm />} />
               <Route path="accommodations/:id/edit" element={<AccommodationForm />} />
+              <Route path="bookings" element={<AdminBookings />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/" replace />} />

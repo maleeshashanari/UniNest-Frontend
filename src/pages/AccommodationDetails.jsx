@@ -17,6 +17,7 @@ import {
 import { getAccommodation } from "../api/accommodations";
 import { formatLKR, isRealImage } from "../utils/format";
 import { isAdmin } from "../utils/auth";
+import BookingPanel from "../components/BookingPanel";
 
 export default function AccommodationDetails() {
   const { id } = useParams();
@@ -209,6 +210,7 @@ export default function AccommodationDetails() {
           >
             <Phone size={18} /> Call {item.contactNumber}
           </a>
+          {!admin && <BookingPanel item={item} />}
         </aside>
       </div>
     </motion.div>

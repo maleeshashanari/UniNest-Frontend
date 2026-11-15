@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { Building2, ExternalLink, LayoutDashboard, LogOut, ShieldCheck } from "lucide-react";
+import { Building2, CalendarCheck, ExternalLink, LayoutDashboard, LogOut, ShieldCheck } from "lucide-react";
 
 import Avatar from "./Avatar";
 import { clearSession, getUser } from "../utils/auth";
@@ -9,6 +9,7 @@ import { clearSession, getUser } from "../utils/auth";
 const links = [
   { to: "/admin", label: "Dashboard", Icon: LayoutDashboard, end: true },
   { to: "/admin/accommodations", label: "Accommodations", Icon: Building2, end: false },
+    { to: "/admin/bookings", label: "Bookings", Icon: CalendarCheck, end: false },
 ];
 
 export default function AdminLayout() {
