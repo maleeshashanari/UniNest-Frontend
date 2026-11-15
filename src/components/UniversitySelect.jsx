@@ -9,6 +9,7 @@ export default function UniversitySelect({
   customValue,
   onCustomChange,
   error,
+  optional = true,
 }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -33,13 +34,18 @@ export default function UniversitySelect({
     setQuery("");
   };
 
+  const selectError = error && value !== OTHERS; // error for the dropdown itself
+  const customError = error && value === OTHERS; // error for the "Others" input
+
   return (
     <div>
       <label className="mb-1.5 flex items-center justify-between text-sm font-semibold text-ink">
         <span>University</span>
-        <span className="rounded-full bg-primary-50 px-2 py-0.5 text-[11px] font-medium text-primary-600">
-          Optional
-        </span>
+        {optional && (
+          <span className="rounded-full bg-primary-50 px-2 py-0.5 text-[11px] font-medium text-primary-600">
+            Optional
+          </span>
+        )}
       </label>
 
       <div ref={wrapRef} className="relative">
@@ -47,7 +53,9 @@ export default function UniversitySelect({
           type="button"
           onClick={() => setOpen((o) => !o)}
           className={`flex w-full items-center rounded-xl border bg-white/80 px-3.5 py-3 text-left text-sm transition-all duration-200 ${
-            open
+            selectError
+              ? "border-danger ring-4 ring-danger/10"
+              : open
               ? "border-primary-500 ring-4 ring-primary-500/15"
               : "border-border hover:border-primary-300"
           }`}
@@ -129,6 +137,8 @@ export default function UniversitySelect({
         </AnimatePresence>
       </div>
 
+      {selectError && <p className="mt-1.5 text-xs font-medium text-danger">{error}</p>}
+
       {/* Custom university input: visible only when "Others" is selected */}
       <AnimatePresence>
         {value === OTHERS && (
@@ -142,7 +152,7 @@ export default function UniversitySelect({
             <div className="pt-3">
               <div
                 className={`flex items-center rounded-xl border bg-accent-50/50 transition-all focus-within:ring-4 ${
-                  error
+                  customError
                     ? "border-danger focus-within:ring-danger/10"
                     : "border-accent-300 focus-within:border-accent-500 focus-within:ring-accent-500/15"
                 }`}
@@ -155,7 +165,9 @@ export default function UniversitySelect({
                   className="w-full bg-transparent px-3 py-3 text-sm outline-none placeholder:text-slate-400"
                 />
               </div>
-              {error && <p className="mt-1.5 text-xs font-medium text-danger">{error}</p>}
+              {customError && (
+                <p className="mt-1.5 text-xs font-medium text-danger">{error}</p>
+              )}
             </div>
           </motion.div>
         )}
