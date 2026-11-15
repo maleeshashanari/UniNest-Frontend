@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { Building2, CalendarCheck, ExternalLink, LayoutDashboard, LogOut, MessageSquare, ShieldCheck } from "lucide-react";
+import { Building2, CalendarCheck, ExternalLink, LayoutDashboard, LogOut, MessageSquare, ShieldCheck, UserCog, Users, Mail, Inbox } from "lucide-react";
 
 import Avatar from "./Avatar";
 import { clearSession, getUser } from "../utils/auth";
@@ -11,6 +11,10 @@ const links = [
   { to: "/admin/accommodations", label: "Accommodations", Icon: Building2, end: false },
   { to: "/admin/bookings", label: "Bookings", Icon: CalendarCheck, end: false },
   { to: "/admin/feedback", label: "Feedback", Icon: MessageSquare, end: false },
+  { to: "/admin/students", label: "Students", Icon: Users, end: false },
+  { to: "/admin/roles", label: "Roles", Icon: UserCog, end: false },
+  { to: "/contact", label: "Contact", Icon: Mail, studentOnly: true },
+  { to: "/admin/contact", label: "Contact", Icon: Inbox, end: false },
 ];
 
 export default function AdminLayout() {

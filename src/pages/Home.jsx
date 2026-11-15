@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Building2, CalendarCheck, KeyRound, Star, UserRound } from "lucide-react";
+import { ArrowRight, Building2, CalendarCheck, KeyRound, Mail, Star, UserRound } from "lucide-react";
 
 import Avatar from "../components/Avatar";
 import { getUser } from "../utils/auth";
@@ -23,6 +23,12 @@ const cards = [
     title: "My reviews",
     text: "See and edit the reviews you have written.",
     Icon: Star,
+  },
+  {
+    to: "/contact",
+    title: "Contact us",
+    text: "Send a question or complaint to the UniNest team.",
+    Icon: Mail,
   },
   {
     to: "/profile",

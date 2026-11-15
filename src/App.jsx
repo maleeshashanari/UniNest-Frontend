@@ -19,12 +19,16 @@ const Accommodations = lazy(() => import("./pages/Accommodations"));
 const AccommodationDetails = lazy(() => import("./pages/AccommodationDetails"));
 const MyBookings = lazy(() => import("./pages/MyBookings"));
 const MyFeedback = lazy(() => import("./pages/MyFeedback"));
+const Contact = lazy(() => import("./pages/Contact"));
 
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const AdminAccommodations = lazy(() => import("./pages/admin/AdminAccommodations"));
 const AccommodationForm = lazy(() => import("./pages/admin/AccommodationForm"));
 const AdminBookings = lazy(() => import("./pages/admin/AdminBookings"));
 const AdminFeedback = lazy(() => import("./pages/admin/AdminFeedback"));
+const AdminStudents = lazy(() => import("./pages/admin/AdminStudents"));
+const AdminRoles = lazy(() => import("./pages/admin/AdminRoles"));
+const AdminContacts = lazy(() => import("./pages/admin/AdminContacts"));
 
 function PageLoader() {
   return (
@@ -82,6 +86,14 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="/contact"
+                element={
+                  <ProtectedRoute role="student">
+                    <Contact />
+                  </ProtectedRoute>
+                }
+              />
             </Route>
 
             {/* Admin pages (students are redirected to /home) */}
@@ -99,6 +111,9 @@ function App() {
               <Route path="accommodations/:id/edit" element={<AccommodationForm />} />
               <Route path="bookings" element={<AdminBookings />} />
               <Route path="feedback" element={<AdminFeedback />} />
+              <Route path="contact" element={<AdminContacts />} />
+              <Route path="students" element={<AdminStudents />} />
+              <Route path="roles" element={<AdminRoles />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/" replace />} />
