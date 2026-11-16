@@ -27,3 +27,5 @@ export const clearSession = () => {
   localStorage.removeItem("user");
   window.dispatchEvent(new Event("auth-changed"));
 };
+
+export const isLoggedIn = () => Boolean(getToken());

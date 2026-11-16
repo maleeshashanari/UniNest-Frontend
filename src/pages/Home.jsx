@@ -292,6 +292,40 @@ export default function Home() {
         </div>
       </motion.section>
 
+            {/* ================= Guest banner ================= */}
+      {!user && (
+        <motion.div
+          {...rise(0.05)}
+          className="flex flex-col gap-4 rounded-3xl border border-primary-200 bg-primary-50/60 p-5 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <div className="flex items-center gap-3">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white text-primary-600 shadow-sm">
+              <ShieldCheck size={22} />
+            </span>
+            <div>
+              <p className="font-extrabold text-ink">You are browsing as a guest</p>
+              <p className="text-sm text-muted">
+                Create a free account to book stays, write reviews and contact UniNest.
+              </p>
+            </div>
+          </div>
+          <div className="flex shrink-0 gap-3">
+            <Link
+              to="/register"
+              className="rounded-xl bg-primary-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-primary-700"
+            >
+              Register
+            </Link>
+            <Link
+              to="/login"
+              className="rounded-xl border border-border bg-white px-5 py-2.5 text-sm font-bold text-ink hover:bg-slate-50"
+            >
+              Sign in
+            </Link>
+          </div>
+        </motion.div>
+      )}
+
       {/* ================= Stats ================= */}
       {isStudent && (
         <motion.div {...rise(0.08)} className="grid grid-cols-2 gap-4 lg:grid-cols-4">

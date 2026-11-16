@@ -16,7 +16,8 @@ import {
 
 import { getAccommodation } from "../api/accommodations";
 import { formatLKR, isRealImage } from "../utils/format";
-import { isAdmin } from "../utils/auth";
+import { isAdmin, isLoggedIn } from "../utils/auth";
+import GuestReviewsNotice from "../components/GuestReviewsNotice";
 import BookingPanel from "../components/BookingPanel";
 import FeedbackSection from "../components/FeedbackSection";
 
@@ -173,7 +174,12 @@ export default function AccommodationDetails() {
               </>
             )}
           </div>
-          {!admin && <FeedbackSection key={item._id} accommodationId={item._id} />}
+          {!admin &&
+            (isLoggedIn() ? (
+              <FeedbackSection key={item._id} accommodationId={item._id} />
+            ) : (
+              <GuestReviewsNotice />
+            ))}
         </div>
 
         {/* Price card */}

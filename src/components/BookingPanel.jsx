@@ -5,7 +5,8 @@ import { BedDouble, CalendarDays, CheckCircle2, Loader2, Phone, Send, Users } fr
 
 import { createBooking } from "../api/bookings";
 import FormInput from "./FormInput";
-import { getUser } from "../utils/auth";
+import LoginRequiredModal from "./LoginRequiredModal";
+import { getUser, isLoggedIn } from "../utils/auth";
 
 const todayStr = () => new Date().toLocaleDateString("en-CA"); // YYYY-MM-DD
 
@@ -22,6 +23,8 @@ export default function BookingPanel({ item }) {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [gate, setGate] = useState(false);
+  const guest = !isLoggedIn();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -47,6 +50,10 @@ export default function BookingPanel({ item }) {
 
   const handleSubmit = async (ev) => {
     ev.preventDefault();
+    if (guest) {
+      setGate(true);
+      return;
+    }
     const errs = validate();
     setErrors(errs);
     if (Object.keys(errs).length) return;
@@ -97,7 +104,7 @@ export default function BookingPanel({ item }) {
     );
   }
 
-  if (!hasPhone) {
+  if (!guest && !hasPhone) {
     return (
       <div className={box}>
         <div className="rounded-xl bg-warning/10 p-4">
@@ -192,6 +199,8 @@ export default function BookingPanel({ item }) {
       <p className="text-center text-xs text-muted">
         Rooms are reserved only after the admin confirms.
       </p>
+
+      {gate && <LoginRequiredModal onClose={() => setGate(false)} action="book a stay" />}
     </form>
   );
 }

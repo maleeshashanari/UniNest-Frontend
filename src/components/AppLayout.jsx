@@ -24,7 +24,8 @@ const links = [
   { to: "/accommodations", label: "Find a stay", short: "Stays", Icon: Building2 },
   { to: "/my-bookings", label: "Bookings", short: "Bookings", Icon: CalendarCheck, studentOnly: true },
   { to: "/my-reviews", label: "Reviews", short: "Reviews", Icon: Star, studentOnly: true },
-  { to: "/contact", label: "Contact", short: "Contact", Icon: Mail, studentOnly: true },
+  // guestOk = guests can open the page (they get a "register first" popup when they act)
+  { to: "/contact", label: "Contact", short: "Contact", Icon: Mail, studentOnly: true, guestOk: true },
 ];
 
 function ProfileMenu({ user, onLogout }) {
@@ -127,10 +128,13 @@ export default function AppLayout() {
   const logout = () => {
     clearSession();
     toast.success("Logged out");
-    navigate("/login", { replace: true });
+    navigate("/home", { replace: true });
   };
 
-  const visible = links.filter((l) => !l.studentOnly || user?.role === "student");
+  const guest = !user;
+  const visible = links.filter(
+    (l) => !l.studentOnly || user?.role === "student" || (guest && l.guestOk)
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -174,7 +178,24 @@ export default function AppLayout() {
             ))}
           </nav>
 
-          <ProfileMenu user={user} onLogout={logout} />
+          {guest ? (
+            <div className="flex items-center gap-2">
+              <Link
+                to="/login"
+                className="rounded-xl px-3 py-2 text-sm font-bold text-ink transition-colors hover:bg-slate-100"
+              >
+                Sign in
+              </Link>
+              <Link
+                to="/register"
+                className="rounded-xl bg-gradient-to-r from-primary-600 to-accent-500 px-4 py-2 text-sm font-bold text-white shadow-md shadow-primary-500/25 transition-transform hover:-translate-y-0.5"
+              >
+                Register
+              </Link>
+            </div>
+          ) : (
+            <ProfileMenu user={user} onLogout={logout} />
+          )}
         </div>
       </header>
 

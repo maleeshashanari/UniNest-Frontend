@@ -49,27 +49,46 @@ function App() {
 
         <Suspense fallback={<PageLoader />}>
           <Routes>
-            {/* Public routes */}
-            <Route path="/" element={<Navigate to="/login" replace />} />
+            {/* Auth pages */}
+            <Route path="/" element={<Navigate to="/home" replace />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
 
-            {/* Student pages (admins can open most of these too) */}
-            <Route
-              element={
-                <ProtectedRoute>
-                  <AppLayout />
-                </ProtectedRoute>
-              }
-            >
+            {/* Main site: guests can browse, so this layout is NOT protected */}
+            <Route element={<AppLayout />}>
+              {/* Open to everyone */}
               <Route path="/home" element={<Home />} />
               <Route path="/accommodations" element={<Accommodations />} />
               <Route path="/accommodations/:id" element={<AccommodationDetails />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/change-password" element={<ChangePassword />} />
 
-              {/* Students only: the backend rejects admins on these routes */}
+              {/* Guests can open it, but get a "register first" popup when they send */}
+              <Route
+                path="/contact"
+                element={
+                  <ProtectedRoute role="student" allowGuest>
+                    <Contact />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Logged-in users only (guests are sent to /login) */}
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/change-password"
+                element={
+                  <ProtectedRoute>
+                    <ChangePassword />
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path="/my-bookings"
                 element={
@@ -86,17 +105,9 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route
-                path="/contact"
-                element={
-                  <ProtectedRoute role="student">
-                    <Contact />
-                  </ProtectedRoute>
-                }
-              />
             </Route>
 
-            {/* Admin pages (students are redirected to /home) */}
+            {/* Admin pages (guests go to /login, students go to /home) */}
             <Route
               path="/admin"
               element={
@@ -116,7 +127,7 @@ function App() {
               <Route path="roles" element={<AdminRoles />} />
             </Route>
 
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<Navigate to="/home" replace />} />
           </Routes>
         </Suspense>
       </MotionConfig>

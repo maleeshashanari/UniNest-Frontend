@@ -10,6 +10,9 @@ import SelectInput from "../components/SelectInput";
 import { CATEGORIES, CONTACT_STATUS_HINTS } from "../data/contactOptions";
 import { formatDate } from "../utils/format";
 
+import LoginRequiredModal from "../components/LoginRequiredModal";
+import { isLoggedIn } from "../utils/auth";
+
 const EMPTY = { category: "", subject: "", message: "" };
 
 export default function Contact() {
@@ -18,10 +21,13 @@ export default function Contact() {
   const [errors, setErrors] = useState({});
   const [sending, setSending] = useState(false);
 
-  const [state, setState] = useState({ loading: true, items: [], error: "" });
+  const [gate, setGate] = useState(false);
+  const guest = !isLoggedIn();
+  const [state, setState] = useState(() => ({ loading: isLoggedIn(), items: [], error: "" }));
   const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
+    if (!isLoggedIn()) return; // guests have no message history
     let cancelled = false;
     getMyContactMessages()
       .then((data) => {
@@ -55,6 +61,10 @@ export default function Contact() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!isLoggedIn()) {
+      setGate(true);
+      return;
+    }
 
     const errs = {};
     if (!form.category) errs.category = "Choose a category";
@@ -97,6 +107,7 @@ export default function Contact() {
     >
       <div>
         <h1 className="text-2xl font-extrabold text-ink sm:text-3xl">Contact us</h1>
+        {gate && <LoginRequiredModal onClose={() => setGate(false)} action="contact the UniNest team" />}
         <p className="mt-1 text-sm text-muted">
           Questions, complaints or problems with a stay? Send us a message.
         </p>
@@ -106,7 +117,7 @@ export default function Contact() {
         {[
           { id: "new", label: "New message" },
           { id: "history", label: `My messages (${loading ? "…" : items.length})` },
-        ].map((t) => (
+        ].filter((t) => !guest || t.id === "new").map((t) => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
